@@ -11,12 +11,15 @@ class PostController extends Controller
 {
     public function index()
     {
+        if (!Cache::has('posts:all')) {
+            Cache::put('posts:all', Post::all());
+        }
         $posts = Cache::get('posts:all', Post::all());
         return view('post.index', compact('posts'));
     }
     public function show($id)
     {
-        $post = Cache::get('posts:' . $id);
+        $post = Cache::get('posts:' . $id, Post::find($id));
         return view('post.show', compact('post'));
     }
     public function create()

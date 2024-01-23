@@ -27,9 +27,14 @@ class CreatePostsCommand extends Command
      */
     public function handle() : void
     {
+        $before = microtime(true);
         Post::factory(10)->create();
-        Post::all()->each(function($post) {
+        $posts = Post::all();
+        Cache::put('posts:all', $posts);
+        $posts->each(function($post) {
             Cache::put('posts:' . $post->id, $post);
         });
+        $after = microtime(true);
+        dd($after - $before);
     }
 }
